@@ -19,12 +19,18 @@ DEFAULT_FRONTEND_ORIGINS = (
     "http://127.0.0.1:5173",
 )
 
+# Vercel preview deployments use unique *.vercel.app subdomains.
+VERCEL_ORIGIN_REGEX = r"https://.*\.vercel\.app"
+
 
 def allowed_cors_origins() -> list[str]:
     origins = list(DEFAULT_FRONTEND_ORIGINS)
     configured = os.environ.get("FRONTEND_ORIGIN", "").strip()
-    if configured and configured not in origins:
-        origins.append(configured)
+    if configured:
+        for origin in configured.split(","):
+            normalized = origin.strip().rstrip("/")
+            if normalized and normalized not in origins:
+                origins.append(normalized)
     return origins
 
 
@@ -37,7 +43,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_cors_origins(),
-    allow_credentials=True,
+    allow_origin_regex=VERCEL_ORIGIN_REGEX,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
