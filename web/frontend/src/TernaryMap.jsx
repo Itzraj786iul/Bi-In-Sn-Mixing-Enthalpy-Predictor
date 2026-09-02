@@ -76,12 +76,12 @@ export default function TernaryMap({ mapTemperature, onMapTemperatureChange, onS
           opacity: 0.95,
         },
         hovertemplate:
-          "Bi: %{a:.4f}<br>In: %{b:.4f}<br>Sn: %{c:.4f}<br>ΔmixH: %{marker.color:.2f} J/mol<extra></extra>",
+          `Bi: %{a:.4f}<br>In: %{b:.4f}<br>Sn: %{c:.4f}<br>Temperature: ${mapTemperature} K<br>ΔmixH: %{marker.color:.2f} J/mol<extra></extra>`,
         showlegend: false,
       },
       ...buildMlExperimentalTraces(surface.experimental_points || []),
     ];
-  }, [surface, colorRange]);
+  }, [surface, colorRange, mapTemperature]);
 
   const handlePlotClick = useCallback(
     (event) => {
@@ -93,26 +93,30 @@ export default function TernaryMap({ mapTemperature, onMapTemperatureChange, onS
   );
 
   return (
-    <section className="viz-section viz-section-featured">
+    <section className="explore-section" aria-labelledby="explore-map-title">
       <ValidatedExploratoryBlocks />
 
-      <div className="viz-toolbar">
-        <div className="temp-selector" role="group" aria-label="Surface temperature">
-          {SURFACE_TEMPS.map((temp) => (
-            <button
-              key={temp}
-              type="button"
-              className={temp === mapTemperature ? "chip active" : "chip"}
-              onClick={() => onMapTemperatureChange(temp)}
-            >
-              {temp} K
-            </button>
-          ))}
+      <div className="explore-controls">
+        <div className="control-group">
+          <span className="control-label">Temperature</span>
+          <div className="segmented-control" role="group" aria-label="Surface temperature">
+            {SURFACE_TEMPS.map((temp) => (
+              <button
+                key={temp}
+                type="button"
+                className={temp === mapTemperature ? "segment active" : "segment"}
+                onClick={() => onMapTemperatureChange(temp)}
+              >
+                {temp} K
+              </button>
+            ))}
+          </div>
         </div>
-        <CrossSectionLegend />
       </div>
 
-      {loading && <p className="state-message">Loading composition surface…</p>}
+      {loading && (
+        <p className="state-message explore-loading">Computing composition surface…</p>
+      )}
       {error && (
         <p className="error" role="alert">
           {error}
@@ -120,29 +124,41 @@ export default function TernaryMap({ mapTemperature, onMapTemperatureChange, onS
       )}
 
       {!loading && !error && surface && (
-        <>
-          <p className="viz-meta">
-            <span className="mono">{surface.experimental_count_at_temperature}</span> of{" "}
-            <span className="mono">{surface.experimental_total}</span> experimental observations at{" "}
-            <span className="mono">{surface.temperature_K}</span> K · Click surface to populate
-            prediction inputs
-          </p>
+        <div className="explore-map-layout">
+          <div className="explore-map-main">
+            <div className="map-header">
+              <p className="map-eyebrow">Composition space</p>
+              <h3 className="map-title" id="explore-map-title">
+                ML surrogate surface
+              </h3>
+              <p className="map-meta">
+                Selected temperature: <span className="mono">{mapTemperature}</span> K ·{" "}
+                <span className="mono">{surface.experimental_count_at_temperature}</span> of{" "}
+                <span className="mono">{surface.experimental_total}</span> experimental observations
+              </p>
+              <p className="map-hint">Click any surface point to populate the prediction inputs.</p>
+            </div>
 
-          <div className="ternary-plot ternary-plot-featured">
-            <Plot
-              data={plotData}
-              layout={getTernaryLayout()}
-              config={{
-                displayModeBar: true,
-                modeBarButtonsToRemove: ["lasso2d", "select2d"],
-                responsive: true,
-              }}
-              style={{ width: "100%", height: "100%" }}
-              onClick={handlePlotClick}
-              useResizeHandler
-            />
+            <div className="ternary-plot viz-frame">
+              <Plot
+                data={plotData}
+                layout={getTernaryLayout({ height: 600 })}
+                config={{
+                  displayModeBar: true,
+                  modeBarButtonsToRemove: ["lasso2d", "select2d"],
+                  responsive: true,
+                }}
+                style={{ width: "100%", height: "100%" }}
+                onClick={handlePlotClick}
+                useResizeHandler
+              />
+            </div>
           </div>
-        </>
+
+          <aside className="explore-sidebar">
+            <CrossSectionLegend />
+          </aside>
+        </div>
       )}
     </section>
   );

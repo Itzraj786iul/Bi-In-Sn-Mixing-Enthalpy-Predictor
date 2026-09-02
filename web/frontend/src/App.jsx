@@ -10,6 +10,7 @@ import {
   SectionHeader,
   SiteFooter,
   ValidationSnapshot,
+  WorkflowNav,
   mixingTypeLabel,
 } from "./ScientificBlocks.jsx";
 import { apiUrl } from "./api.js";
@@ -105,8 +106,10 @@ export default function App() {
     <div className="page">
       <Hero />
       <ValidationSnapshot />
+      <WorkflowNav />
 
       <SectionHeader
+        id="predict"
         label="01 / Predict"
         title="Estimate mixing enthalpy"
         description="Specify alloy composition and temperature to evaluate the frozen Polynomial Degree-2 surrogate."
@@ -115,39 +118,41 @@ export default function App() {
       <main className="predict-grid">
         <section className="panel panel-inputs">
           <form onSubmit={handlePredict} className="form">
-            <label>
-              <span className="field-label">xBi</span>
-              <span className="field-hint">Bi mole fraction</span>
-              <input
-                type="number"
-                step="any"
-                min="0"
-                max="1"
-                value={xBi}
-                onChange={(e) => setXBi(e.target.value)}
-                required
-              />
-            </label>
+            <div className="composition-grid">
+              <label>
+                <span className="field-label">xBi</span>
+                <span className="field-hint">Bi mole fraction</span>
+                <input
+                  type="number"
+                  step="any"
+                  min="0"
+                  max="1"
+                  value={xBi}
+                  onChange={(e) => setXBi(e.target.value)}
+                  required
+                />
+              </label>
 
-            <label>
-              <span className="field-label">xIn</span>
-              <span className="field-hint">In mole fraction</span>
-              <input
-                type="number"
-                step="any"
-                min="0"
-                max="1"
-                value={xIn}
-                onChange={(e) => setXIn(e.target.value)}
-                required
-              />
-            </label>
+              <label>
+                <span className="field-label">xIn</span>
+                <span className="field-hint">In mole fraction</span>
+                <input
+                  type="number"
+                  step="any"
+                  min="0"
+                  max="1"
+                  value={xIn}
+                  onChange={(e) => setXIn(e.target.value)}
+                  required
+                />
+              </label>
 
-            <label>
-              <span className="field-label">xSn</span>
-              <span className="field-hint">Calculated: 1 − xBi − xIn</span>
-              <input type="text" value={xSnPreview} readOnly className="readonly mono" />
-            </label>
+              <label>
+                <span className="field-label">xSn</span>
+                <span className="field-hint">1 − xBi − xIn</span>
+                <input type="text" value={xSnPreview} readOnly className="readonly mono" />
+              </label>
+            </div>
 
             <label>
               <span className="field-label">Temperature</span>
@@ -175,7 +180,7 @@ export default function App() {
           </form>
         </section>
 
-        <section className="panel panel-result">
+        <section className={`panel panel-result${result ? " panel-result-active" : ""}`}>
           {result ? (
             <div className="result-display">
               <p className="result-label">ΔmixH</p>
@@ -224,6 +229,7 @@ export default function App() {
       </main>
 
       <SectionHeader
+        id="explore"
         label="02 / Explore composition"
         title="Composition-dependent mixing enthalpy"
         description="Explore the surrogate surface across the Bi–In–Sn ternary composition space at selected temperatures."
@@ -236,6 +242,7 @@ export default function App() {
       />
 
       <SectionHeader
+        id="compare"
         label="03 / Compare models"
         title="Two models. One thermodynamic system."
         description="Compare the experimentally validated Polynomial Degree-2 surrogate with the Redlich-Kister-Muggianu thermodynamic model across the Bi–In–Sn composition space."

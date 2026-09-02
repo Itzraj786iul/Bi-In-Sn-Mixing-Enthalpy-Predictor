@@ -30,7 +30,8 @@ export function Hero() {
 
 export function ValidationSnapshot() {
   return (
-    <section className="metrics-strip" aria-label="Primary validation metrics">
+    <section className="metrics-band" aria-label="Primary validation metrics">
+      <div className="metrics-strip">
       <div className="metric">
         <span className="metric-value mono">104</span>
         <span className="metric-label">Calorimetry observations</span>
@@ -56,13 +57,37 @@ export function ValidationSnapshot() {
         Primary validation: leave-one-cross-section-out evaluation on 104 experimental
         observations.
       </p>
+      </div>
     </section>
   );
 }
 
-export function SectionHeader({ label, title, description }) {
+export function WorkflowNav() {
+  const steps = [
+    { id: "predict", num: "01", label: "Predict" },
+    { id: "explore", num: "02", label: "Explore" },
+    { id: "compare", num: "03", label: "Compare" },
+  ];
+
   return (
-    <div className="section-header">
+    <nav className="workflow-nav" aria-label="Analysis workflow">
+      <ol className="workflow-nav-list">
+        {steps.map((step) => (
+          <li key={step.id}>
+            <a className="workflow-nav-link" href={`#${step.id}`}>
+              <span className="workflow-nav-num mono">{step.num}</span>
+              <span className="workflow-nav-label">{step.label}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+export function SectionHeader({ id, label, title, description }) {
+  return (
+    <div className="section-header section-block" id={id}>
       <p className="section-label">{label}</p>
       <h2 className="section-title">{title}</h2>
       {description && <p className="section-desc">{description}</p>}

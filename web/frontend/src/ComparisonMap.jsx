@@ -225,7 +225,7 @@ export default function ComparisonMap() {
                 </p>
               </div>
 
-              <div className="ternary-plot comparison-plot">
+              <div className="ternary-plot comparison-plot viz-frame">
                 <Plot
                   data={plotData}
                   layout={getTernaryLayout({ height: 620 })}
