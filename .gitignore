@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+
+# Frontend / local runtime
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# Editor / temp
+*.log
+.vite/
