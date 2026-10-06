@@ -1,8 +1,12 @@
 # Project Work Report — Stage 1
 
+> **Historical note:** This document describes an earlier stage of the project (data reconstruction, RKM and synthetic-data generation). The project later developed an experimental-only Direct Polynomial Degree-2 predictor (features xBi, xIn, T; trained on the 104 experimental observations) and evaluated it with strict leave-one-cross-section-out (LOCSO) validation: MAE 41.10 J/mol, RMSE 56.34 J/mol, R² 0.9712. RKM-derived synthetic datasets were investigated as an augmentation strategy. Under strict LOCSO, augmentation did not improve prediction of the real experimental observations, so synthetic data are not used to train the final predictor and are retained only for exploratory analysis. Statements below about ML being "not started", or about future training on synthetic data, describe the situation at the time of writing. For the completed methodology and results, see `README.md`, `reports/final_model_equation.md`, `reports/final_model_validation.md` and `reports/synthetic_data_ablation.md`. The dataset validator described here later became the current 65-check version, and the combined synthetic CSV files mentioned below were removed in a later cleanup.
+>
+> **PDF version:** `reports/project_work_report.pdf` was produced from the original Stage-1 text. It does not contain these historical notes or the later wording corrections, and is **not** synchronized with this Markdown file. No generator for it exists in the repository. Treat the PDF as a historical artifact; this Markdown file is the current version.
+
 **Project title:** AI-Based Surrogate Model for Predicting Mixing Enthalpy of Bi-In-Sn Lead-Free Solder Alloy
 
-**This document:** technical record of the work completed so far (experimental-data reconstruction and thermodynamics-based synthetic-data generation). Machine-learning model training has not been started.
+**This document:** technical record of the work completed at Stage 1 (experimental-data reconstruction and thermodynamics-based synthetic-data generation). At the time of writing, machine-learning model training had not been started.
 
 **Primary scientific source:** M.R. Kumar, S. Mohan and C.K. Behera, “Measurements of Mixing Enthalpy for a Lead-Free Solder Bi-In-Sn System,” *Journal of Electronic Materials*, Vol. 48, No. 12, 2019, pp. 8096–8106 (PDF supplied with the project).
 
@@ -636,7 +640,9 @@ Feature tables for a later comparison of composition-only vs composition+tempera
 
 ---
 
-## 24. Current status
+## 24. Status at the end of Stage 1 (historical)
+
+The ML stages marked "Not started" below were completed later; see the historical note at the top of this report.
 
 | Stage | Status |
 | --- | --- |
@@ -700,4 +706,4 @@ Until that benchmark exists, there is no trained surrogate to report.
 | Dataset validation | **PASS, 87 checks** |
 | Random seed | **42** |
 
-At this stage, the project has completed the experimental-data reconstruction and thermodynamics-based synthetic-data generation stage. The machine-learning surrogate-model stage has not yet been completed.
+At the end of Stage 1, the project had completed the experimental-data reconstruction and thermodynamics-based synthetic-data generation stage. The machine-learning surrogate-model stage was completed later (see the historical note at the top of this report).

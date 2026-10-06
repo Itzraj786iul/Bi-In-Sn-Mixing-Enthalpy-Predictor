@@ -1,6 +1,9 @@
 # Final Model Validation
 
 ## Final candidate model
+
+> **Note:** This candidate was subsequently adopted as the final frozen Direct Polynomial Degree-2 model (features xBi, xIn, T; 104 experimental observations; primary validation LOCSO MAE 41.10 / RMSE 56.34 / R² 0.9712). The random 5-fold result below (plain `KFold`, MAE 30.34) is secondary. It differs slightly from the stratified 5-fold value (31.22) in `controlled_model_comparison.md` because the fold assignment differs. The RKM values are a physics-model reference on the same 104 points, not an out-of-sample score.
+
 PolynomialFeatures(degree=2) + LinearRegression (minimum-norm OLS)
 
 Features: xBi, xIn, temperature_K

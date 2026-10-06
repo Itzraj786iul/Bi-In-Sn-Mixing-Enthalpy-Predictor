@@ -1,5 +1,7 @@
 # Understanding the RKM Model
 
+> **Historical note:** This document describes an earlier stage of the project, written before any ML model existed. The RKM description itself remains accurate and RKM is the fixed thermodynamic benchmark. The final implementation subsequently developed an experimental-only Direct Polynomial Degree-2 predictor (xBi, xIn, T) and evaluated it using strict leave-one-cross-section-out (LOCSO) validation. RKM-derived synthetic data were tested as augmentation and are not used to train the final predictor. Refer to `README.md` and the final research reports for the completed methodology and results.
+
 This note explains the Redlich–Kister–Muggianu (RKM) calculation that is actually sitting in this repository. It is based on `src/rkm_model.py`, Table III and Table IV in `professor_paper.pdf`, `docs/rkm_model.md`, and `reports/rkm_validation.md`. No new parameters were invented here.
 
 ---
@@ -416,7 +418,7 @@ Overall result, from `reports/rkm_validation.md` and `scripts/validate_dataset.p
 - RMSE = 73.49 J/mol
 - \(R^2\) = 0.9510
 
-These are **RKM-versus-experiment** numbers. They are not machine-learning scores. No ML model has been trained.
+These are **RKM-versus-experiment** numbers. They are not machine-learning scores. When this note was written, no ML model had been trained. The final ML model (Direct Poly D2) was later evaluated under LOCSO (MAE 41.10, RMSE 56.34, R² 0.9712). Those scores are not strictly like-for-like with the RKM numbers above, because the RKM ternary parameters were fitted to these measurements by the paper's authors.
 
 **MAE.** Mean absolute error. On average, RKM is 57 J/mol away from the calorimeter. Experimental \(\Delta_{\mathrm{mix}}H\) in this file runs from −1413.0 to −64.32 J/mol, so 57 J/mol is a modest fraction of that range, but it is larger than the series uncertainties \(u(\Delta_{\mathrm{mix}}H)\) (about 8–23 J/mol).
 
@@ -474,7 +476,7 @@ This note stops there. The important idea for now is: synthetic \(\Delta_{\mathr
 
 RKM is not a measurement. It is not a neural network. It does not “know” temperature. It does not predict partial enthalpy of indium. \(R^2 = 0.9510\) is not a statement that the model is 95.1% accurate everywhere in the triangle.
 
-If we later train an ML model on synthetic labels, a good score on those labels only means the ML model copied this polynomial. The 104 Table III rows remain the only calorimetric check.
+A good score of an ML model on synthetic labels would only mean that it copied this polynomial. The final ML model was trained on the 104 experimental rows only, and the 104 Table III rows remain the only calorimetric check.
 
 ---
 

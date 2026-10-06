@@ -1,6 +1,10 @@
 # Final ML Surrogate Analysis (Dataset B)
 
 ## Important disclaimer
+Dataset B was used only as an evaluation grid for the frozen model; it was not used for training. The final model is trained on the 104 experimental observations only.
+
+The per-point prediction file `reports/final_surrogate_predictions.csv` (≈8.6 MB) is a generated artifact and is not tracked in Git; regenerate it with `python scripts/build_final_surrogate.py`.
+
 Dataset B is **RKM-generated** and covers many compositions **without experimental measurements**.
 ML predictions on Dataset B are **surrogate / model-exploration outputs only**.
 They are **not experimentally validated** in unsampled ternary regions.

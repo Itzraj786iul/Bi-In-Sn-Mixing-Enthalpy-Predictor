@@ -1,5 +1,7 @@
 # Compositional Feature Representation Check
 
+> **Note on labels:** "Model A" and "Model B" in this report are model-selection candidates local to this report. **Model B here (xBi, xIn, temperature_K; LOCSO MAE 41.10 / RMSE 56.34 / R² 0.9712) was adopted as the final frozen Direct Polynomial Degree-2 model**, trained on the 104 experimental observations. These labels are unrelated to "Residual Model A" and "Path-aware Model B" in the later research reports (`residual_learning_results.md`, `path_aware_residual_analysis.md`, `controlled_model_comparison.md`), which were not adopted. The RKM row is the fixed physics-model reference evaluated on the same 104 points, not an out-of-sample LOCSO result (its ternary parameters were fitted to these measurements by the paper's authors).
+
 ## Purpose
 Test whether temperature-aware Poly D2 is sensitive to including redundant xSn
 given xBi + xIn + xSn = 1.

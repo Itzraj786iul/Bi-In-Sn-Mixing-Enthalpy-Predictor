@@ -1,5 +1,7 @@
 # Understanding the ML Baseline
 
+> **Historical note:** This document describes an earlier stage of the project: the first linear-regression baseline, which was superseded. The final implementation is an experimental-only Direct Polynomial Degree-2 predictor (features xBi, xIn, T; xSn = 1 − xBi − xIn derived), evaluated with strict leave-one-cross-section-out validation: MAE 41.10 J/mol, RMSE 56.34 J/mol, R² 0.9712. RKM-derived synthetic datasets were investigated as a possible augmentation strategy. Under strict LOCSO validation, augmentation did not improve prediction of the real experimental observations. Therefore synthetic data are not used to train the final predictor and are retained only for exploratory analysis. The "synthetic training" arm below describes this early baseline experiment only. See `reports/final_model_validation.md` and `reports/synthetic_data_ablation.md`.
+
 This note explains the **first machine-learning experiment** in the project. It uses ordinary linear regression on composition only, evaluated with leave-one-cross-section-out (LOCSO). Results are in `reports/ml_baseline_results.md`.
 
 No Random Forest, no boosting, no temperature feature yet — just a transparent pipeline check.
@@ -49,7 +51,7 @@ Temperature is **not** included yet. A separate run with `[xBi, xIn, xSn, temper
 - column: `integral_mixing_enthalpy_J_per_mol`
 - meaning: integral molar mixing enthalpy \(\Delta_{\mathrm{mix}}H\) (J/mol)
 
-**Synthetic training** uses:
+**Synthetic training arm of this baseline experiment** (not part of the final predictor) uses:
 
 - column: `delta_mix_H_J_per_mol` from Dataset A (RKM + noise)
 
@@ -131,7 +133,7 @@ Fair comparison requires the same test points and the same target column.
 
 ## 11. Why the 104 experimental observations remain important
 
-Synthetic rows are useful for training density, but they inherit RKM assumptions. Only Table III rows are direct measurements.
+Synthetic rows were considered here as a way to add training density, but they inherit RKM assumptions. RKM-derived synthetic datasets were later investigated as a possible augmentation strategy. Under strict LOCSO validation, augmentation did not improve prediction of the real experimental observations (54.32 vs 41.10 J/mol). Therefore synthetic data are not used to train the final predictor and are retained only for exploratory analysis. Only Table III rows are direct measurements.
 
 **Ultimate reference:** `data/original_experimental_data.csv` evaluated through LOCSO.
 
@@ -150,7 +152,7 @@ A good score on synthetic training data does not prove the model learned physics
 
 **Cannot tell us:**
 
-- Whether a more flexible model (polynomial features, trees, etc.) would beat RKM.
+- Whether a more flexible model (polynomial features, trees, etc.) would beat RKM. (Answered later: the final Direct Poly D2 has lower LOCSO error than the RKM reference on the measured cross-sections, with the caveat that RKM's parameters were fitted to these data by the authors.)
 - Whether temperature helps.
 - Whether Dataset B interior points can be predicted experimentally (no labels there).
 - That high accuracy on synthetic data implies calorimetric accuracy.

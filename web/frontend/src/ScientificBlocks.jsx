@@ -171,34 +171,39 @@ export function ModelValidationTable() {
   return (
     <div className="validation-table-wrap comparison-validation-strip">
       <p className="validation-table-caption">
-        Primary experimental benchmark on 104 calorimetry observations.
+        Experimental benchmark on 104 calorimetry observations.
       </p>
       <table className="validation-table">
         <thead>
           <tr>
             <th scope="col" />
-            <th scope="col">ML surrogate</th>
-            <th scope="col">RKM</th>
+            <th scope="col">ML surrogate (LOCSO holdout)</th>
+            <th scope="col">RKM (author-fitted parameters)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">LOCSO MAE</th>
+            <th scope="row">MAE</th>
             <td className="mono">41.10 J/mol</td>
             <td className="mono">57.13 J/mol</td>
           </tr>
           <tr>
-            <th scope="row">LOCSO RMSE</th>
+            <th scope="row">RMSE</th>
             <td className="mono">56.34 J/mol</td>
             <td className="mono">73.49 J/mol</td>
           </tr>
           <tr>
-            <th scope="row">LOCSO R²</th>
+            <th scope="row">R²</th>
             <td className="mono">0.9712</td>
             <td className="mono">0.9510</td>
           </tr>
         </tbody>
       </table>
+      <p className="validation-table-caption">
+        Not strictly like-for-like: the ML result uses cross-section holdout, whereas the RKM
+        parameters were fitted to the experimental measurements by the original authors. The RKM
+        value is a physics-model reference, not an independent LOCSO score.
+      </p>
     </div>
   );
 }
@@ -284,6 +289,10 @@ export function FinalSurrogateSection() {
             These coefficients are empirical regression parameters and are not Redlich-Kister
             thermodynamic interaction parameters.
           </p>
+          <p className="equation-disclaimer">
+            Coefficients are displayed to 6 decimal places; calculations use the full-precision
+            fitted T² coefficient, the term most sensitive to rounding.
+          </p>
         </div>
       )}
     </section>
@@ -293,9 +302,9 @@ export function FinalSurrogateSection() {
 export function MethodologySection() {
   const steps = [
     { title: "Experiment", detail: "104 calorimetry observations" },
-    { title: "Thermodynamic model", detail: "Redlich-Kister-Muggianu" },
-    { title: "Synthetic data", detail: "RKM-generated training data" },
-    { title: "Machine learning", detail: "Polynomial Degree-2 surrogate" },
+    { title: "Data reconstruction", detail: "Sign and composition checks" },
+    { title: "Physics benchmark", detail: "Redlich-Kister-Muggianu (fixed)" },
+    { title: "Machine learning", detail: "Direct Polynomial Degree-2, experimental data only" },
     { title: "Validation", detail: "Leave-One-Cross-Section-Out" },
   ];
 
@@ -317,6 +326,13 @@ export function MethodologySection() {
       <p className="methodology-note">
         LOCSO tests generalization to an unseen experimental composition cross-section, providing
         a stricter evaluation than a random split when neighboring compositions are present.
+      </p>
+      <p className="methodology-note">
+        Synthetic datasets generated from the RKM model were evaluated during the research as an
+        augmentation strategy. Under LOCSO, RKM-derived augmentation did not improve prediction of
+        the real experimental observations, so synthetic data are not used to train the final
+        predictor. They remain useful for exploratory visualization, sensitivity, and hypothesis
+        analysis.
       </p>
     </section>
   );
@@ -367,19 +383,23 @@ const PROVENANCE_CROSS_SECTIONS = [
 ];
 
 const PROVENANCE_STEPS = [
-  { num: "01", title: "Experimental calorimetry", detail: "104 observations from the source study." },
-  { num: "02", title: "Thermodynamic model", detail: "Redlich-Kister-Muggianu representation." },
+  { num: "01", title: "Experimental calorimetry", detail: "104 real observations from the source study." },
+  {
+    num: "02",
+    title: "Data cleaning / reconstruction",
+    detail: "Sign and composition values checked against the source tables.",
+  },
   {
     num: "03",
-    title: "Synthetic data",
-    detail: "Generated from the implemented RKM model for ML development.",
+    title: "RKM physics benchmark",
+    detail: "Fixed Redlich-Kister-Muggianu model used as the reference.",
   },
   {
     num: "04",
-    title: "ML surrogate",
+    title: "Direct Polynomial Degree-2",
     detail: (
       <>
-        Polynomial Degree-2 regression using <span className="mono">xBi</span>,{" "}
+        Trained on the experimental data only, using <span className="mono">xBi</span>,{" "}
         <span className="mono">xIn</span>, <span className="mono">temperature_K</span> with{" "}
         <span className="mono">xSn = 1 − xBi − xIn</span>.
       </>
@@ -387,8 +407,27 @@ const PROVENANCE_STEPS = [
   },
   {
     num: "05",
-    title: "Validation",
+    title: "Experimental validation",
     detail: "Leave-One-Cross-Section-Out validation on the experimental data.",
+  },
+];
+
+const SYNTHETIC_DATA_STEPS = [
+  { num: "S1", title: "RKM-derived synthetic datasets", detail: "Generated from the RKM model." },
+  {
+    num: "S2",
+    title: "Augmentation / sensitivity experiment",
+    detail: "Real data combined with synthetic data, evaluated under LOCSO.",
+  },
+  {
+    num: "S3",
+    title: "Not beneficial for final training",
+    detail: "Did not improve prediction of the real experimental observations.",
+  },
+  {
+    num: "S4",
+    title: "Retained for exploratory analysis",
+    detail: "Visualization, sensitivity, and hypothesis analysis only.",
   },
 ];
 
@@ -466,6 +505,22 @@ export function ResearchProvenanceSection() {
       </div>
 
       <div className="provenance-block">
+        <h3 className="provenance-label">Synthetic-data experiment (not used by the final predictor)</h3>
+        <div className="provenance-workflow">
+          {SYNTHETIC_DATA_STEPS.map((step, index) => (
+            <div key={step.num} className="provenance-workflow-item">
+              {index > 0 && <div className="provenance-workflow-arrow" aria-hidden="true" />}
+              <div className="provenance-workflow-step">
+                <span className="provenance-step-num mono">{step.num}</span>
+                <h4>{step.title}</h4>
+                <p>{step.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="provenance-block">
         <h3 className="provenance-label">Primary experimental validation</h3>
         <p className="provenance-subheading">Polynomial Degree-2 ML surrogate</p>
         <ul className="provenance-metrics">
@@ -479,7 +534,9 @@ export function ResearchProvenanceSection() {
             LOCSO R²: <span className="mono">0.9712</span>
           </li>
         </ul>
-        <p className="provenance-subheading">RKM benchmark</p>
+        <p className="provenance-subheading">
+          RKM reference (author-fitted parameters, evaluated on the same 104 observations)
+        </p>
         <ul className="provenance-metrics">
           <li>
             MAE: <span className="mono">57.13 J/mol</span>
@@ -494,6 +551,13 @@ export function ResearchProvenanceSection() {
         <p className="provenance-note">
           These metrics are evaluated against the experimental observations. They do not constitute
           validation of predictions at unsampled ternary compositions.
+        </p>
+        <p className="provenance-note">
+          The two results are not strictly like-for-like out-of-sample scores: the ML result uses
+          cross-section holdout, whereas the RKM parameters were fitted to the experimental
+          measurements by the original authors. The Direct Poly D2 model achieves lower error than
+          the RKM reference under this evaluation; the RKM value is a physics-model reference rather
+          than an independent LOCSO validation score.
         </p>
       </div>
 
@@ -527,6 +591,13 @@ export function ResearchProvenanceSection() {
           <li>
             Differences between ML and RKM in unsampled regions indicate model disagreement and
             should not be interpreted as experimentally established thermodynamic behavior.
+          </li>
+          <li>
+            Thermodynamic boundary limitation: the fitted polynomial is an empirical predictive
+            surrogate and was not constrained to satisfy ΔmixH = 0 at the pure components. It
+            therefore gives non-zero endpoint values (for example, about −392 J/mol for pure Bi at
+            767 K). These boundary extrapolations are not physically valid pure-component
+            thermodynamic predictions.
           </li>
         </ul>
       </div>

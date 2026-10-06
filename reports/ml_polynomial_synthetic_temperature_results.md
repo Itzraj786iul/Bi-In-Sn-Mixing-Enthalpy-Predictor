@@ -1,5 +1,7 @@
 # Temperature-Aware Poly D2 with Synthetic Training
 
+> **Historical note (superseded):** This is an intermediate experiment using xBi, xIn, xSn, T. The final frozen Direct Poly D2 uses xBi, xIn, T, is trained on the 104 experimental observations only, and achieves LOCSO MAE 41.10 / RMSE 56.34 / R² 0.9712. The definitive synthetic-augmentation test for the final model is `synthetic_data_ablation.md` (real-only 41.10 vs real + Dataset A 54.32). RKM rows are a physics-model reference with author-fitted parameters, not an out-of-sample LOCSO score.
+
 ## Scientific question
 Does Dataset A synthetic RKM data help a temperature-aware Poly D2 model predict experimental ΔmixH?
 

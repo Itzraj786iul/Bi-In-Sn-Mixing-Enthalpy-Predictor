@@ -124,6 +124,6 @@ The optional argument `T` is accepted so that `rkm_delta_mix_h(xBi, xIn, xSn, T)
 5. Training an ML model on RKM labels and testing it on other RKM labels tests reproduction of the polynomial, not calorimetric accuracy.
 6. Noise added to synthetic rows is a statistical model of tabulated \(u(\Delta_{\mathrm{mix}}H)\), not a new measurement.
 
-**Before any ML work:** synthetic \(\Delta_{\mathrm{mix}}H\) is not independent experimental evidence. Train/test scores on RKM-generated labels only show that a model copied the polynomial. Held-out Table III rows (`source = paper_experiment`) remain the external check.
+**Note on synthetic data:** synthetic \(\Delta_{\mathrm{mix}}H\) is not independent experimental evidence. RKM-derived synthetic augmentation was later tested and did not improve LOCSO prediction of the real observations, so it is not used by the final predictor. Train/test scores on RKM-generated labels only show that a model copied the polynomial. Held-out Table III rows (`source = paper_experiment`) remain the external check.
 
 Experimental Table III rows remain the only calorimetric anchors.

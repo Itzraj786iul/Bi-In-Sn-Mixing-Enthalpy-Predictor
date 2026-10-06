@@ -11,6 +11,9 @@ dist/
 .env.local
 .env.*.local
 
+# Generated research artifacts (regenerate with scripts/build_final_surrogate.py)
+/reports/final_surrogate_predictions.csv
+
 # Editor / temp
 *.log
 .vite/

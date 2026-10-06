@@ -102,5 +102,11 @@ magnitude comparisons across term types are misleading without standardization.
 | Composition | xBi, xIn, xSn in formula | xBi, xIn (+ xSn = 1−xBi−xIn) |
 | Validation | MAE 57.13 on 104 exp. points | LOCSO MAE 41.10 on 104 OOF points |
 
-RKM remains the physics-based benchmark; ML captures experimental scatter and
-temperature trends that the temperature-independent RKM surface cannot represent.
+RKM remains the physics-based benchmark; ML captures systematic deviations from RKM and
+temperature trends present in the measurements that the temperature-independent RKM surface cannot represent.
+The two validation figures are not strictly like-for-like: the ML value is a LOCSO holdout score, whereas
+the RKM ternary parameters were fitted to these experimental measurements by the original authors.
+
+**Boundary limitation:** the polynomial is an empirical surrogate and was not constrained to satisfy
+ΔmixH = 0 at the pure components (e.g. about −392 J/mol for pure Bi at 767 K). Endpoint values are not
+physically valid pure-component predictions.

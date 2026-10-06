@@ -1,5 +1,7 @@
 """
-Frozen Polynomial Degree-2 mixing enthalpy surrogate (Step 4A).
+Frozen final Direct Polynomial Degree-2 mixing enthalpy surrogate.
+
+Trained on the 104 experimental observations only; primary validation is LOCSO.
 
 Features: xBi, xIn, temperature_K
 Output: integral molar mixing enthalpy ΔmixH in J/mol
@@ -17,7 +19,7 @@ COEF_XBI_XIN = -9182.903143
 COEF_XBI_T = 4.021166
 COEF_XIN2 = 535.330326
 COEF_XIN_T = 2.025539
-COEF_T2 = 0.000974
+COEF_T2 = 0.0009741759040480247
 
 T_MIN_K = 767.0
 T_MAX_K = 855.0

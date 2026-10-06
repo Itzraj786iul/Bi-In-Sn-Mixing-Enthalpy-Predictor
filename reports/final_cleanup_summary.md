@@ -1,5 +1,7 @@
 # Final cleanup summary
 
+> **Historical note:** This summary records the Stage-1 repository cleanup, done before the ML work. The directory structure shown predates the final model, website and research reports. For the current repository state see `README.md` and `step_11a_repository_curation.md`.
+
 ## 1. Final directory structure
 
 ```text

@@ -53,6 +53,17 @@ See `docs/rkm_model.md`.
 
 Shape checks passed: **True**
 
+> **Reproducibility note on the minima values.** The minimum values above
+> (Bi-rich −1303.1, equiatomic −1039.7, Sn-rich −785.6 J/mol) are the historical values from
+> the original execution and are kept unchanged here. The code or execution that produced them
+> is not available in the repository, so they cannot be reproduced exactly from the current
+> repository. The current RKM implementation (`src/rkm_model.py`), evaluated along the three
+> reconstructed cross-sections on a 0.01 xIn grid by `scripts/generate_research_figures.py`,
+> gives Bi-rich −1317.5, equiatomic −1039.9 and Sn-rich −794.2 J/mol, at the same minimum
+> locations (xIn = 0.50 / 0.54 / 0.59). The qualitative conclusion is unchanged: the minima
+> order Bi-rich < equiatomic < Sn-rich is preserved, and the shape checks pass. All other
+> metrics in this report (overall, per-series and per-temperature) reproduce exactly.
+
 ## Residual comments
 
 The largest residuals are on the Bi-rich section (Series 1) and at some In-rich

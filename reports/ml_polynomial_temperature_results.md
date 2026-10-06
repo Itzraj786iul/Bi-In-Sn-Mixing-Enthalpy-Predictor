@@ -1,5 +1,7 @@
 # Polynomial Degree 2 — Temperature Feature Experiment
 
+> **Historical note (superseded):** This is an intermediate experiment. Neither model here is the final model: the temperature model uses xBi, xIn, xSn, T (MAE 43.81). The final frozen Direct Poly D2 uses xBi, xIn, T and achieves LOCSO MAE 41.10 / RMSE 56.34 / R² 0.9712 (see `final_model_validation.md`). RKM rows are a physics-model reference with author-fitted parameters, not an out-of-sample LOCSO score.
+
 ## Scientific question
 Does adding experimental temperature improve Poly D2 predictions of integral mixing enthalpy?
 

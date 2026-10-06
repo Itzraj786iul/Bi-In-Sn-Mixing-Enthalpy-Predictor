@@ -1,5 +1,7 @@
 # Understanding the Synthetic Data
 
+> **Historical note:** This document describes an earlier stage of the project, written when the synthetic datasets were created and before any ML model existed. RKM-derived synthetic datasets were investigated as a possible augmentation strategy. Under strict LOCSO validation, augmentation did not improve prediction of the real experimental observations (pooled MAE 54.32 J/mol for real + Dataset A vs 41.10 J/mol for real data only; `reports/synthetic_data_ablation.md`). Therefore synthetic data are not used to train the final predictor and are retained only for exploratory analysis. The final predictor is an experimental-only Direct Polynomial Degree-2 model (xBi, xIn, T) trained on the 104 experimental observations. The description of the datasets below remains accurate.
+
 This note explains the synthetic datasets that already exist in this repository. It is based on the actual CSV files and `scripts/generate_synthetic_data.py`. Nothing here was regenerated.
 
 ---
@@ -8,13 +10,13 @@ This note explains the synthetic datasets that already exist in this repository.
 
 The professor’s paper gives us **104 real calorimetry measurements**. That sounds like a lot, but in composition space they only cover **three thin lines** inside the Bi–In–Sn triangle — not the whole alloy system.
 
-Our long-term goal is a surrogate model that can estimate mixing enthalpy at many compositions. Before any machine learning exists, we still need many more `(composition → ΔmixH)` pairs than Table III provides.
+Our long-term goal is a surrogate model that can estimate mixing enthalpy at many compositions. At the time, the idea was that denser `(composition → ΔmixH)` pairs than Table III provides might help such a model; this was later tested and not adopted (see the historical note above).
 
 **Synthetic data** in this project means:
 
 > A composition where **ΔmixH was calculated by the validated RKM polynomial**, not measured in the calorimeter.
 
-They are useful because RKM can be evaluated anywhere on the triangle once we trust it on the 104 measured points. Synthetic rows give us dense coverage along the measured lines (Dataset A) and across the full triangle (Dataset B).
+They are useful because RKM can be evaluated anywhere on the triangle, although it is only checked against experiment on the three measured lines. Synthetic rows give us dense coverage along the measured lines (Dataset A) and across the full triangle (Dataset B).
 
 They are **not** a substitute for experiments. They are model-generated labels.
 
@@ -427,8 +429,12 @@ RKM (Equation 4, Table IV)
         ↓
 Synthetic ΔmixH (Dataset A and B)
         ↓
-Future ML model learns from those labels
+Tested as ML augmentation (Dataset A) under strict LOCSO
+        ↓
+No improvement on the real observations → not used to train the final predictor
 ```
+
+The final predictor was trained on the 104 experimental rows only. The warning below explains why scores on synthetic labels alone would not have been evidence of calorimetric accuracy.
 
 If we train and test **only** on synthetic rows, a good score often means the ML model **reproduced RKM**, not that it predicts calorimetry.
 
@@ -440,7 +446,7 @@ This warning is also in `docs/rkm_model.md` and the project README.
 
 ---
 
-## 14. Current project pipeline
+## 14. Project pipeline at the time of writing (historical)
 
 ```text
 Professor's paper (Table III + Equation 4 + Table IV)
@@ -460,8 +466,10 @@ RKM calculates ΔmixH at each           ← MODEL OUTPUT
 Dataset A (7389, noisy, cross-sections)  ← SYNTHETIC
 Dataset B (15453, deterministic, full triangle)  ← SYNTHETIC
         ↓
-NEXT STAGE: ML surrogate               ← NOT STARTED
+NEXT STAGE (at the time): ML surrogate
 ```
+
+The ML stage was completed later. The final ML surrogate is the Direct Poly D2 (xBi, xIn, T), trained on the 104 experimental rows only, with LOCSO MAE 41.10 J/mol. Synthetic augmentation was tested and rejected (54.32 vs 41.10 J/mol), and Datasets A and B are exploratory only.
 
 At each stage:
 
@@ -472,7 +480,7 @@ At each stage:
 | RKM predictions at test compositions | No | Yes |
 | Dataset A & B targets | No | Yes (RKM ± noise for A) |
 
-Machine learning has **not** been implemented yet. When it is, the question will be: can the surrogate match **experiments** on held-out Table III rows, not just match RKM on synthetic grids?
+When this note was written, machine learning had not been implemented. The question it posed was whether the surrogate could match **experiments** on held-out Table III rows, not just match RKM on synthetic grids. The final model was evaluated in exactly that way, by holding out whole experimental cross-sections (LOCSO).
 
 ---
 

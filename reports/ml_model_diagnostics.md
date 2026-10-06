@@ -1,5 +1,7 @@
 # ML Model Diagnostics
 
+> **Historical note (superseded):** These diagnostics cover the earlier composition-only models (e.g. Polynomial Degree 2 without temperature, MAE 54.64), as do the `ml_diag_*` figures. They do not describe the final frozen Direct Poly D2 (xBi, xIn, T; LOCSO MAE 41.10 / RMSE 56.34 / R² 0.9712). RKM rows are a physics-model reference with author-fitted parameters, not an out-of-sample LOCSO score.
+
 Analysis of **104 out-of-fold experimental predictions** from LOCSO
 (`experimental_only` training setup). No new models were trained.
 

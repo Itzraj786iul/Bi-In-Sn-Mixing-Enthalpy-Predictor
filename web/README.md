@@ -1,10 +1,10 @@
 # Bi-In-Sn Mixing Enthalpy Web Application
 
-Scientific web interface for the **frozen** Polynomial Degree-2 surrogate (Step 4A).
+Scientific web interface for the **frozen** experimental-only Direct Polynomial Degree-2 surrogate, the final model.
 
 - **Frontend:** React + Vite (`web/frontend`)
 - **Backend:** FastAPI (`web/backend`)
-- **Model:** Hard-coded coefficients in `backend/model.py` (not refit)
+- **Model:** Hard-coded coefficients in `backend/model.py` (not refit), taken from `reports/final_model_coefficients.csv`. The model was trained only on the 104 experimental observations; the backend loads no synthetic data.
 
 ## Backend setup
 
@@ -34,7 +34,7 @@ curl -X POST http://127.0.0.1:8000/predict \
   -d "{\"xBi\": 0.2509, \"xIn\": 0.4982, \"temperature_K\": 813}"
 ```
 
-Example response (ML surrogate):
+Example response (ML surrogate; `delta_mix_H_J_mol` shown rounded to 4 decimals):
 
 ```json
 {
@@ -42,12 +42,20 @@ Example response (ML surrogate):
   "xIn": 0.4982,
   "xSn": 0.2509,
   "temperature_K": 813.0,
-  "delta_mix_H_J_mol": -1014.69,
+  "delta_mix_H_J_mol": -1014.5761,
   "mixing_type": "Exothermic"
 }
 ```
 
-Note: RKM at the same composition is approximately −1028.55 J/mol; the ML model is trained on experimental data and differs slightly.
+### Benchmark composition
+
+xBi = 0.2509, xIn = 0.4982, xSn = 0.2509, T = 813 K (experimental row EXP_0051, measured ΔmixH = −1017.0 J/mol):
+
+| Quantity | Value |
+|----------|------:|
+| ML (frozen Poly D2) | −1014.5761 J/mol |
+| RKM | −1028.5461 J/mol |
+| ML − RKM | +13.9700 J/mol |
 
 ## Frontend setup
 
@@ -135,13 +143,16 @@ With an empty `VITE_API_BASE_URL`, `npm run dev` uses the Vite proxy to `http://
 
 **Output:** integral molar mixing enthalpy ΔmixH (J/mol)
 
-**Primary validated performance (LOCSO, 104 experimental points):**
+**Coefficients:** the backend uses the full-precision fitted coefficient for the T² term (`0.0009741759040480247`). The website displays coefficients to 6 decimal places for readability.
 
-| Metric | Value |
-|--------|------:|
-| MAE | 41.10 J/mol |
-| RMSE | 56.34 J/mol |
-| R² | 0.9712 |
+**Experimental evaluation (104 experimental points):**
+
+| Model | Evaluation protocol | MAE | RMSE | R² |
+|-------|---------------------|----:|-----:|---:|
+| Direct Poly D2 (final) | LOCSO, held-out cross-section | 41.10 J/mol | 56.34 J/mol | 0.9712 |
+| RKM | Evaluated on the 104 observations using the published parameters | 57.13 J/mol | 73.49 J/mol | 0.9510 |
+
+These are not strictly like-for-like out-of-sample scores. The ML result uses cross-section holdout. RKM is never refitted in this project, but its ternary parameters were fitted to these experimental measurements by the original authors. The RKM value is therefore a physics-model reference rather than an independent LOCSO validation score.
 
 **Input limits in the web form:**
 
@@ -150,6 +161,8 @@ With an empty `VITE_API_BASE_URL`, `npm run dev` uses the Vite proxy to `http://
 - 767 K ≤ T ≤ 855 K
 
 Predictions outside the measured cross-sections are surrogate extrapolation and are not experimentally validated.
+
+**Thermodynamic boundary limitation:** the fitted polynomial is an empirical predictive surrogate and was not constrained to satisfy ΔmixH = 0 at the pure components. It therefore returns non-zero endpoint values (for example, about −392 J/mol for pure Bi at 767 K). These boundary extrapolations are not physically valid pure-component thermodynamic predictions.
 
 ## Project layout
 

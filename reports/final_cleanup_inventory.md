@@ -1,5 +1,7 @@
 # Final cleanup inventory
 
+> **Historical note:** This inventory records the Stage-1 repository cleanup, done before the ML work. "Final" refers to that cleanup, not to the completed project. For the current repository state see `step_11a_repository_curation.md`.
+
 Classifications before any deletion. Reasons are one line each.
 
 ## Root
